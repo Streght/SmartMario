@@ -105,6 +105,24 @@ namespace SmartMario
             }
         }
 
-        
+        public void AddMario()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/MarioPic.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        public void AddPeach()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/PeachPic.png", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        public void AddChamp()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/MushPic.png", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+
     }
 }

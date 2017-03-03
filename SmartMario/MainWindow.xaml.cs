@@ -23,6 +23,8 @@ namespace SmartMario
         public MainWindow()
         {
             InitializeComponent();
+            LevelCell test = new LevelCell();
+            test.AddChamp();
         }
     }
 }

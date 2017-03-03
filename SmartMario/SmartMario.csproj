@@ -104,11 +104,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MarioPic.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="MushPic.png" />
-    <Resource Include="PeachPic.png" />
+    <Resource Include="Ressources\MarioPic.jpg" />
+    <Resource Include="Ressources\MushPic.png" />
+    <Resource Include="Ressources\PeachPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
