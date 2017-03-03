@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SmartMario
 {
@@ -40,6 +41,11 @@ namespace SmartMario
         /// </summary>
         private LevelCell m_CellWithMario;
 
+        private DispatcherTimer m_DispatcherTimer = new DispatcherTimer();
+        private DispatcherTimer m_DisplayTimer = new DispatcherTimer();
+
+        private DateTime start;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +55,39 @@ namespace SmartMario
             PopulateLevel();
 
             CreateGUI();
+
+            // Timers setup
+            m_DisplayTimer.Tick += new EventHandler(displayTimer_Tick);
+            m_DispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+
+            m_DispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            m_DisplayTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            start = DateTime.Now;
+            m_DisplayTimer.Start();
+            m_DispatcherTimer.Start();
+        }
+
+        private void displayTimer_Tick(object sender, EventArgs e)
+        {
+            timerText.Text = Convert.ToString(DateTime.Now - start);
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            m_DisplayTimer.Stop();
+            m_DispatcherTimer.Stop();
+            MessageBox.Show("you loose !");
+        }
+
+        private void ResetTimer()
+        {
+            m_DisplayTimer.Stop();
+            m_DispatcherTimer.Stop();
+            m_DisplayTimer.Interval = new TimeSpan(0, 0, 0, 50);
+            m_DispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            start = DateTime.Now;
+            m_DispatcherTimer.Start();
+            m_DisplayTimer.Start();
         }
 
         #region Getters / Setters
@@ -93,7 +132,7 @@ namespace SmartMario
         {
             get
             {
-                return m_CellWithMario;         
+                return m_CellWithMario;
             }
             set
             {
@@ -128,7 +167,7 @@ namespace SmartMario
         /// Populates the matrix of cell that represents a level, and will later be displayed in the GUI
         /// </summary>
         public void PopulateLevel()
-        {   
+        {
             for (int i = 0; i < m_GridSize; i++)
             {
                 for (int j = 0; j < m_GridSize; j++)
@@ -142,7 +181,7 @@ namespace SmartMario
                     {
                         LevelCellMatrix[i, j].AddPeach();
                     }
-                    else if((i == 0 && (j == 4)) |
+                    else if ((i == 0 && (j == 4)) |
                            (i == 1 && (j == 1) | (j == 3)) |
                            (i == 2 && (j == 3) | (j == 5)) |
                            (i == 3 && (j == 2) | (j == 5)) |
