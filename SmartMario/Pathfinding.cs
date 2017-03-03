@@ -19,7 +19,7 @@ namespace SmartMario
             }
         }
 
-        public static void ComputeGridWorthiness(LevelCell[,] p_Grid)
+       /* public static void ComputeGridWorthiness(LevelCell[,] p_Grid)
         {
             int size = p_Grid.Length;
             for (int k = (size * 2) - 2; k >= 0; k--)
@@ -36,7 +36,7 @@ namespace SmartMario
                     }
                 }
             }
-        }
+        }*/
 
         private static int CalculateMaxWorthinessFromCell(LevelCell cell)
         {

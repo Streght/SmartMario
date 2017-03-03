@@ -20,28 +20,30 @@ namespace SmartMario
     /// </summary>
     public partial class LevelCell : UserControl
     {
-        private int m_iLineNumber;
-        private int m_iColumnNumber;
-        private int m_iWorthiness = 0;
+        private int m_LineNumber;
+        private int m_ColumnNumber;
+        private int m_Worthiness = 0;
 
-        private bool m_bHasMario = false;
-        private bool m_bHasPeach = false;
-        private bool m_bHasChamp = false;
+        private bool m_HasMario = false;
+        private bool m_HasPeach = false;
+        private bool m_HasChamp = false;
 
         public LevelCell()
         {
             InitializeComponent();
         }
 
+        #region Getters / Setters
+
         public bool HasMario
         {
             get
             {
-                return m_bHasMario;
+                return m_HasMario;
             }
             set
             {
-                m_bHasMario = value;
+                m_HasMario = value;
             }
         }
 
@@ -49,11 +51,11 @@ namespace SmartMario
         {
             get
             {
-                return m_bHasPeach;
+                return m_HasPeach;
             }
             set
             {
-                m_bHasPeach = value;
+                m_HasPeach = value;
             }
         }
 
@@ -61,11 +63,11 @@ namespace SmartMario
         {
             get
             {
-                return m_bHasChamp;
+                return m_HasChamp;
             }
             set
             {
-                m_bHasChamp = value;
+                m_HasChamp = value;
             }
         }
 
@@ -73,11 +75,11 @@ namespace SmartMario
         {
             get
             {
-                return m_iLineNumber;
+                return m_LineNumber;
             }
             set
             {
-                m_iLineNumber = value;
+                m_LineNumber = value;
             }
         }
 
@@ -85,11 +87,11 @@ namespace SmartMario
         {
             get
             {
-                return m_iColumnNumber;
+                return m_ColumnNumber;
             }
             set
             {
-                m_iColumnNumber = value;
+                m_ColumnNumber = value;
             }
         }
 
@@ -97,13 +99,15 @@ namespace SmartMario
         {
             get
             {
-                return m_iWorthiness;
+                return m_Worthiness;
             }
             set
             {
-                m_iWorthiness = value;
+                m_Worthiness = value;
             }
         }
+
+        #endregion 
 
         public void AddMario()
         {
@@ -123,6 +127,41 @@ namespace SmartMario
             cellImage.Source = image;
         }
 
+        public void ClearCell()
+        {
+            cellImage.Source = null;
+        }
 
+        /// <summary>
+        /// Gets the cell located directly to the right 
+        /// </summary>
+        /// <returns>The cell on the right, or null if we are located 
+        ///          on the right edge of the level</returns>
+        public LevelCell getRightCell(MainWindow window)
+        {
+            // If the cell if on the right edge, there is no neighbor to return
+            if (ColumnIndex == MainWindow.m_GridSize - 1)
+            {
+                return null;
+            }
+            // Otherwise the right neighbor is next on the line index matrix
+            return window.LevelCellMatrix[LineIndex,ColumnIndex + 1];
+        }
+
+        /// <summary>
+        /// Gets the cell located directly below 
+        /// </summary>
+        /// <returns>The cell below, or null if we are located 
+        ///          on the bottom edge of the level</returns>
+        public LevelCell getBottomCell(MainWindow window)
+        {
+            // If the cell if on the right edge, there is no neighbor to return
+            if (LineIndex == MainWindow.m_GridSize - 1)
+            {
+                return null;
+            }
+            // Otherwise the right neighbor is next on the line index matrix
+            return window.LevelCellMatrix[LineIndex + 1, ColumnIndex];
+        }
     }
 }
