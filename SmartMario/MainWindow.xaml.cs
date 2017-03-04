@@ -41,17 +41,16 @@ namespace SmartMario
         /// </summary>
         private LevelCell m_CellWithMario;
 
-<<<<<<< HEAD
+
         /// <summary>
         /// Current score of Mario, gains +1 every time a mushroom is collected
         /// </summary>
         private int m_Score = 0;
-=======
+
         private DispatcherTimer m_DispatcherTimer = new DispatcherTimer();
         private DispatcherTimer m_DisplayTimer = new DispatcherTimer();
 
         private DateTime start;
->>>>>>> 259993dbb855ac732e2ff3953ab861709351da3c
 
         public MainWindow()
         {
@@ -63,9 +62,9 @@ namespace SmartMario
 
             CreateGUI();
 
-<<<<<<< HEAD
+
             //RoundAndAroundAndAround();
-=======
+
             // Timers setup
             m_DisplayTimer.Tick += new EventHandler(displayTimer_Tick);
             m_DispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -98,7 +97,6 @@ namespace SmartMario
             start = DateTime.Now;
             m_DispatcherTimer.Start();
             m_DisplayTimer.Start();
->>>>>>> 259993dbb855ac732e2ff3953ab861709351da3c
         }
 
         #region Getters / Setters
