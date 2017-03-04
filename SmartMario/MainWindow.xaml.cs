@@ -54,6 +54,8 @@ namespace SmartMario
 
             PopulateLevel();
 
+            //Pathfinding.ComputeMaxChampPath(m_LevelCellMatrix);
+
             CreateGUI();
 
             // Timers setup
