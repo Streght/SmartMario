@@ -280,6 +280,10 @@ namespace SmartMario
                 nextCellToGo.AddMario();
                 CellWithMario.ClearCell();
                 CellWithMario = nextCellToGo;
+                if (nextCellToGo.HasPeach == true)
+                {
+                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !");
+                }
             }
             else
             {
@@ -303,6 +307,10 @@ namespace SmartMario
                 nextCellToGo.AddMario();
                 CellWithMario.ClearCell();
                 CellWithMario = nextCellToGo;
+                if (nextCellToGo.HasPeach == true)
+                {
+                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !");
+                }
             }
             else
             {
