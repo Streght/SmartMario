@@ -18,7 +18,7 @@
 
         <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
             <TextBlock TextTrimming="WordEllipsis" Margin="5,0,0,0">How many mushrooms do I have ?</TextBlock>
-            <TextBlock x:Name="nbMushroomsText" MinHeight="25" Margin="5,0,0,0">. . .</TextBlock>
+            <TextBlock x:Name="nbMushroomsText" MinHeight="25" Margin="5,0,0,0">0</TextBlock>
             <TextBlock TextTrimming="WordEllipsis" Margin="5,0,0,0">How many mushrooms can I possibly have ?</TextBlock>
             <TextBlock x:Name="nbMushroomsMaxText" MinHeight="25" Margin="5,0,0,0">. . .</TextBlock>
             <Button x:Name="MoveRightButton" Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Height="30" Click="On_GoRightButtonClick">Go Right</Button>

@@ -40,6 +40,11 @@ namespace SmartMario
         /// </summary>
         private LevelCell m_CellWithMario;
 
+        /// <summary>
+        /// Current score of Mario, gains +1 every time a mushroom is collected
+        /// </summary>
+        private int m_Score = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +54,8 @@ namespace SmartMario
             PopulateLevel();
 
             CreateGUI();
+
+            //RoundAndAroundAndAround();
         }
 
         #region Getters / Setters
@@ -98,6 +105,18 @@ namespace SmartMario
             set
             {
                 m_CellWithMario = value;
+            }
+        }
+
+        public int Score
+        {
+            get
+            {
+                return m_Score;
+            }
+            set
+            {
+                m_Score = value;
             }
         }
 
@@ -186,11 +205,18 @@ namespace SmartMario
             mainGrid.Children.Add(LevelGridGUI);
             Content = mainGrid;
         }
+        
+        public void EditTextDetails()
+        {
+            nbMushroomsText.Text = Score.ToString();
 
-        public void OneRound()
+            Content = mainGrid;
+        }
+        public void RoundAndAroundAndAround()
         {
             // Déroulement d'un tour de jeu, avec soit le déplacement par le joueur soit le timer qui finit
-            // Update du GUI
+
+            EditTextDetails();
         }
 
         #region Events
@@ -203,6 +229,11 @@ namespace SmartMario
             LevelCell nextCellToGo = CellWithMario.getRightCell(this);
             if (nextCellToGo != null)
             {
+                if (nextCellToGo.HasChamp == true)
+                {
+                    Score++;
+                    EditTextDetails();
+                }
                 nextCellToGo.AddMario();
                 CellWithMario.ClearCell();
                 CellWithMario = nextCellToGo;
@@ -221,6 +252,11 @@ namespace SmartMario
             LevelCell nextCellToGo = CellWithMario.getBottomCell(this);
             if (nextCellToGo != null)
             {
+                if (nextCellToGo.HasChamp == true)
+                {
+                    Score++;
+                    EditTextDetails();
+                }
                 nextCellToGo.AddMario();
                 CellWithMario.ClearCell();
                 CellWithMario = nextCellToGo;

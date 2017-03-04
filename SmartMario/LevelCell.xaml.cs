@@ -113,23 +113,27 @@ namespace SmartMario
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/MarioPic.jpg", UriKind.Relative));
             cellImage.Source = image;
+            HasMario = true;
         }
 
         public void AddPeach()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/PeachPic.png", UriKind.Relative));
             cellImage.Source = image;
+            HasPeach = true;
         }
 
         public void AddChamp()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/MushPic.png", UriKind.Relative));
             cellImage.Source = image;
+            HasChamp = true;
         }
 
         public void ClearCell()
         {
             cellImage.Source = null;
+            HasChamp = HasMario = HasPeach = false;
         }
 
         /// <summary>
