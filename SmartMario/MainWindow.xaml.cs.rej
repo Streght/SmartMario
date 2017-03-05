@@ -1,0 +1,12 @@
+diff a/SmartMario/MainWindow.xaml.cs b/SmartMario/MainWindow.xaml.cs	(rejected hunks)
+@@ -307,6 +307,10 @@
+                 nextCellToGo.AddMario();
+                 CellWithMario.ClearCell();
+                 CellWithMario = nextCellToGo;
++                if (nextCellToGo.HasPeach == true)
++                {
++                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !");
++                }
+             }
+             else
+             {

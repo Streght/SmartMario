@@ -288,7 +288,6 @@ namespace SmartMario
         /// <param name="e"></param>
         private void displayTimer_Tick(object sender, EventArgs e)
         {
-            CultureInfo ci = CultureInfo.InvariantCulture;
             DateTime time = Convert.ToDateTime((m_Delay - (DateTime.Now - m_Start)).ToString());
 
             timerText.Text = "Temps restant : " + time.ToString("s.ff");
