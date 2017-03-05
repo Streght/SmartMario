@@ -102,7 +102,7 @@ namespace SmartMario
                         if (m_LevelGrid[j, i].HasChamp)
                         {
                             // We find the highest reachable worthiness and we add 1
-                            m_LevelGrid[j, i].Worthiness = CalculateMaxWorthinessFromCell(m_LevelGrid[j, i]) + 1;
+                            m_LevelGrid[j, i].Worthiness = FindMaxWorthinessFromCell(m_LevelGrid[j, i]) + 1;
                             // If the cell worthiness is higher than the current maximum number of mushrooms
                             if (m_LevelGrid[j, i].Worthiness > m_GridMaximumMushroomsNumber)
                             {
@@ -121,7 +121,7 @@ namespace SmartMario
         /// </summary>
         /// <param name="p_LevelCell"></param>
         /// <returns></returns>
-        private static int CalculateMaxWorthinessFromCell(LevelCell p_LevelCell)
+        private static int FindMaxWorthinessFromCell(LevelCell p_LevelCell)
         {
             int MaxWorthiness = 0;
             for (int i = p_LevelCell.LineIndex; i < m_LevelGridSize; i++)
@@ -206,7 +206,7 @@ namespace SmartMario
             for (int j = p_LevelCell.ColumnIndex; j < m_LevelGridSize; j++)
             {
                 // The next worthy cell will be the one which has a worthiness equals to WorthinessIndex - 1
-                if (m_LevelGrid[p_LineIndex, j].Worthiness == WorthinessIndex )
+                if (m_LevelGrid[p_LineIndex, j].Worthiness == WorthinessIndex)
                 {
                     LevelCell NextCase = null;
 
@@ -221,10 +221,10 @@ namespace SmartMario
                     {
                         NextCase = m_LevelGrid[p_LineIndex, j];
                         // We update the WorthinessIndex to its new value (WorthinessIndex - 1)
-                        WorthinessIndex = m_LevelGrid[p_LineIndex, j].Worthiness -1;
+                        WorthinessIndex = m_LevelGrid[p_LineIndex, j].Worthiness - 1;
                     }
 
-                    // We add the needed information to the Disctionnary
+                    // We add the needed information to the Dictionnary
                     HashMap.Add("bool", false);
                     HashMap.Add("nextCase", NextCase);
                     return HashMap;

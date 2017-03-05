@@ -58,7 +58,14 @@ namespace SmartMario
         /// </summary>
         private TimeSpan m_Delay = new TimeSpan(0, 0, 5);
 
+        /// <summary>
+        /// A list which contains the line numbers of the random generated mushrooms
+        /// </summary>
         List<int> line = new List<int>();
+
+        /// <summary>
+        /// A list which contains the column numbers of the random generated mushrooms
+        /// </summary>
         List<int> column = new List<int>();
 
         public MainWindow()
@@ -72,6 +79,10 @@ namespace SmartMario
             initWPF();
         }
 
+        /// <summary>
+        /// Function with initializes the LevelCellMatrix, the WPF, computes the pathfinding
+        /// and initializes the timers
+        /// </summary>
         private void initWPF()
         {
             m_Score = 0;
@@ -266,7 +277,7 @@ namespace SmartMario
                     m_DispatcherTimer.Stop();
 
                     DisplayPath();
-                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !\nYou got "+
+                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !\nYou got " +
                         m_Score +
                         " mushrooms out of the "
                         + Pathfinding.GridMaximumMushroomsNumber +
@@ -287,10 +298,12 @@ namespace SmartMario
         /// </summary>
         public void DisplayPath()
         {
+            // We put Marion back to the start
             m_CellWithMario.ClearCell();
             LevelCellMatrix[0, 0].AddMario();
             LevelCellMatrix[m_GridSize - 1, m_GridSize - 1].AddPeach();
 
+            // We put the mushrooms back on the grid
             for (int k = 0; k < (int)(Math.Pow(m_GridSize, 2) / Math.Sqrt(m_GridSize)); k++)
             {
                 if (!(line[k] == 0 && column[k] == 0) && !(line[k] == m_GridSize - 1 && column[k] == m_GridSize - 1))
