@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmartMario"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="SmartMario" Height="350" Width="525"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <Grid x:Name="mainGrid" Background="White">
         <Grid.RowDefinitions>

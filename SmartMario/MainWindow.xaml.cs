@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace SmartMario
@@ -14,7 +16,7 @@ namespace SmartMario
         /// <summary>
         /// Number of rows (or columns) in the level
         /// </summary>
-        private int m_GridSize = 6;
+        private int m_GridSize = 10;
 
         /// <summary>
         /// Graphical grid used to contain and display the LevelCells
@@ -56,6 +58,9 @@ namespace SmartMario
         /// </summary>
         private TimeSpan m_Delay = new TimeSpan(0, 0, 5);
 
+        List<int> line = new List<int>();
+        List<int> column = new List<int>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -69,6 +74,12 @@ namespace SmartMario
 
         private void initWPF()
         {
+            m_Score = 0;
+            EditTextDetails();
+
+            line.Clear();
+            column.Clear();
+
             CreateLevel();
 
             PopulateLevel();
@@ -77,11 +88,6 @@ namespace SmartMario
             Pathfinding.ComputeMaxChampPath(m_LevelCellMatrix);
             // Display the maximum number of mushrooms possible to get
             nbMushroomsMaxText.Text = Pathfinding.GridMaximumMushroomsNumber.ToString();
-
-            foreach (LevelCell cell in Pathfinding.Path)
-            {
-                //m_LevelCellMatrix[cell.LineIndex, cell.ColumnIndex].AddMario();
-            }
 
             CreateGUI();
 
@@ -151,17 +157,26 @@ namespace SmartMario
                     {
                         LevelCellMatrix[i, j].AddPeach();
                     }
-                    else if ((i == 0 && (j == 4)) |
-                           (i == 1 && (j == 1) | (j == 3)) |
-                           (i == 2 && (j == 3) | (j == 5)) |
-                           (i == 3 && (j == 2) | (j == 5)) |
-                           (i == 4 && (j == 3) | (j == 4)) |
-                           (i == 5 && (j == 0) | (j == 4)))
-                    {
-                        LevelCellMatrix[i, j].AddChamp();
-                    }
                 }
             }
+
+            //int stop = ;
+
+            Random random = new Random();
+
+            for (int k = 0; k < (int)(Math.Pow(m_GridSize, 2) / Math.Sqrt(m_GridSize)); k++)
+            {
+                line.Add(random.Next(0, m_GridSize - 1));
+                column.Add(random.Next(0, m_GridSize - 1));
+            }
+
+            for (int k = 0; k < (int)(Math.Pow(m_GridSize, 2) / Math.Sqrt(m_GridSize)); k++)
+            {
+                if (!(line[k] == 0 && column[k] == 0) && !(line[k] == m_GridSize - 1 && column[k] == m_GridSize - 1))
+                    LevelCellMatrix[line[k], column[k]].AddChamp();
+            }
+
+            LevelCellMatrix[1, 0].AddChamp();
         }
 
         /// <summary>
@@ -245,14 +260,48 @@ namespace SmartMario
                 nextCellToGo.AddMario();
                 m_CellWithMario.ClearCell();
                 m_CellWithMario = nextCellToGo;
+                if (nextCellToGo.HasPeach == true)
+                {
+                    m_DisplayTimer.Stop();
+                    m_DispatcherTimer.Stop();
+
+                    DisplayPath();
+                    MessageBox.Show("OKIDOKI ! LET'S GO MAMAMIA !\nYou got "+
+                        m_Score +
+                        " mushrooms out of the "
+                        + Pathfinding.GridMaximumMushroomsNumber +
+                        " possible");
+
+                    initWPF();
+                }
+
+                else
+                {
+                    ResetTimers();
+                }
             }
-            else
+        }
+
+        /// <summary>
+        /// Display the path to get the most mushrooms
+        /// </summary>
+        public void DisplayPath()
+        {
+            m_CellWithMario.ClearCell();
+            LevelCellMatrix[0, 0].AddMario();
+            LevelCellMatrix[m_GridSize - 1, m_GridSize - 1].AddPeach();
+
+            for (int k = 0; k < (int)(Math.Pow(m_GridSize, 2) / Math.Sqrt(m_GridSize)); k++)
             {
-                //MessageBox.Show("Don't fly, you fool !");
+                if (!(line[k] == 0 && column[k] == 0) && !(line[k] == m_GridSize - 1 && column[k] == m_GridSize - 1))
+                    LevelCellMatrix[line[k], column[k]].AddChamp();
             }
 
-            EditTextDetails();
-            ResetTimers();
+            foreach (LevelCell cell in Pathfinding.Path)
+            {
+                m_LevelCellMatrix[cell.LineIndex, cell.ColumnIndex].BorderBrush = new SolidColorBrush(Colors.Red);
+                m_LevelCellMatrix[cell.LineIndex, cell.ColumnIndex].BorderThickness = new Thickness(5, 5, 5, 5); ;
+            }
         }
 
         #region Events
@@ -302,7 +351,14 @@ namespace SmartMario
         {
             m_DisplayTimer.Stop();
             m_DispatcherTimer.Stop();
-            MessageBox.Show("you loose !");
+
+            DisplayPath();
+
+            MessageBox.Show("Game over !\nYou got " +
+                m_Score +
+                " mushrooms out of the " +
+                Pathfinding.GridMaximumMushroomsNumber +
+                " possible");
 
             initWPF();
         }

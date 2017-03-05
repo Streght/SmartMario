@@ -14,19 +14,19 @@ namespace SmartMario
         /// <summary>
         /// The level grid (i.e. the LevelCellGrid)
         /// </summary>
-        private static LevelCell[,] m_LevelGrid = null;
+        private static LevelCell[,] m_LevelGrid;
         /// <summary>
         /// The size of the level
         /// </summary>
-        private static int m_LevelGridSize = -1;
+        private static int m_LevelGridSize;
         /// <summary>
         /// How many mushrooms can be picked up at most
         /// </summary>
-        private static int m_GridMaximumMushroomsNumber = -1;
+        private static int m_GridMaximumMushroomsNumber;
         /// <summary>
         /// Worthiness index used in recurrence to keep track of the current worthiness
         /// </summary>
-        private static int WorthinessIndex = -1;
+        private static int WorthinessIndex;
 
         #region Getters
 
@@ -61,6 +61,14 @@ namespace SmartMario
         /// <param name="p_LevelCellMatrix"></param>
         public static void ComputeMaxChampPath(LevelCell[,] p_LevelCellMatrix)
         {
+            // reset all variables
+            Path.Clear();
+            m_LevelGrid = null;
+            m_LevelGridSize = -1;
+            m_GridMaximumMushroomsNumber = -1;
+            WorthinessIndex = -1;
+
+            // Compute required values
             m_LevelGrid = p_LevelCellMatrix;
             m_LevelGridSize = p_LevelCellMatrix.GetLength(0);
 
@@ -198,13 +206,13 @@ namespace SmartMario
             for (int j = p_LevelCell.ColumnIndex; j < m_LevelGridSize; j++)
             {
                 // The next worthy cell will be the one which has a worthiness equals to WorthinessIndex - 1
-                if (m_LevelGrid[p_LineIndex, j].Worthiness == WorthinessIndex - 1)
+                if (m_LevelGrid[p_LineIndex, j].Worthiness == WorthinessIndex )
                 {
                     LevelCell NextCase = null;
 
-                    // If we found it and the new worthiness equals 1, is the last mushroom before finding Peach,
-                    // so the next cell is the one of the bottom right with Peach
-                    if (m_LevelGrid[p_LineIndex, j].Worthiness == 1)
+                    // If we found it and the current worthinessIndex equals 1, it is the last mushroom before 
+                    // finding Peach so the next cell is the one of the bottom right with Peach
+                    if (WorthinessIndex == 0)
                     {
                         NextCase = m_LevelGrid[m_LevelGridSize - 1, m_LevelGridSize - 1];
                     }
@@ -213,7 +221,7 @@ namespace SmartMario
                     {
                         NextCase = m_LevelGrid[p_LineIndex, j];
                         // We update the WorthinessIndex to its new value (WorthinessIndex - 1)
-                        WorthinessIndex = m_LevelGrid[p_LineIndex, j].Worthiness;
+                        WorthinessIndex = m_LevelGrid[p_LineIndex, j].Worthiness -1;
                     }
 
                     // We add the needed information to the Disctionnary

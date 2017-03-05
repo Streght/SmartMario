@@ -89,6 +89,19 @@ namespace SmartMario
             }
         }
 
+        public bool HasMario
+        {
+            get
+            {
+                return m_HasMario;
+            }
+
+            set
+            {
+                m_HasMario = value;
+            }
+        }
+
         #endregion
 
         public void AddMario()
