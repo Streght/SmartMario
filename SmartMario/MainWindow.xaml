@@ -17,7 +17,11 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-            <TextBlock x:Name="timerText" MinHeight="25" Margin="5,0,0,0"/>
+            <TextBlock x:Name="timerText" MinHeight="25" Margin="5,0,0,0">
+                <TextBlock.BindingGroup>
+                    <BindingGroup/>
+                </TextBlock.BindingGroup>
+            </TextBlock>
             <TextBlock TextTrimming="WordEllipsis" Margin="5,0,0,0">How many mushrooms do I have ?</TextBlock>
             <TextBlock x:Name="nbMushroomsText" MinHeight="25" Margin="5,0,0,0">0</TextBlock>
             <TextBlock TextTrimming="WordEllipsis" Margin="5,0,0,0">How many mushrooms can I possibly have ?</TextBlock>

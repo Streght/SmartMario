@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SmartMario
 {
@@ -20,8 +9,8 @@ namespace SmartMario
     /// </summary>
     public partial class LevelCell : UserControl
     {
-        private int m_LineNumber;
-        private int m_ColumnNumber;
+        private int m_LineIndex;
+        private int m_ColumnIndex;
         private int m_Worthiness = 0;
 
         private bool m_HasMario = false;
@@ -35,51 +24,16 @@ namespace SmartMario
 
         #region Getters / Setters
 
-        public bool HasMario
-        {
-            get
-            {
-                return m_HasMario;
-            }
-            set
-            {
-                m_HasMario = value;
-            }
-        }
-
-        public bool HasPeach
-        {
-            get
-            {
-                return m_HasPeach;
-            }
-            set
-            {
-                m_HasPeach = value;
-            }
-        }
-
-        public bool HasChamp
-        {
-            get
-            {
-                return m_HasChamp;
-            }
-            set
-            {
-                m_HasChamp = value;
-            }
-        }
-
         public int LineIndex
         {
             get
             {
-                return m_LineNumber;
+                return m_LineIndex;
             }
+
             set
             {
-                m_LineNumber = value;
+                m_LineIndex = value;
             }
         }
 
@@ -87,11 +41,12 @@ namespace SmartMario
         {
             get
             {
-                return m_ColumnNumber;
+                return m_ColumnIndex;
             }
+
             set
             {
-                m_ColumnNumber = value;
+                m_ColumnIndex = value;
             }
         }
 
@@ -101,19 +56,46 @@ namespace SmartMario
             {
                 return m_Worthiness;
             }
+
             set
             {
                 m_Worthiness = value;
             }
         }
 
-        #endregion 
+        public bool HasChamp
+        {
+            get
+            {
+                return m_HasChamp;
+            }
+
+            set
+            {
+                m_HasChamp = value;
+            }
+        }
+
+        public bool HasPeach
+        {
+            get
+            {
+                return m_HasPeach;
+            }
+
+            set
+            {
+                m_HasPeach = value;
+            }
+        }
+
+        #endregion
 
         public void AddMario()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/MarioPic.jpg", UriKind.Relative));
             cellImage.Source = image;
-            HasMario = true;
+            m_HasMario = true;
         }
 
         public void AddPeach()
@@ -133,7 +115,7 @@ namespace SmartMario
         public void ClearCell()
         {
             cellImage.Source = null;
-            HasChamp = HasMario = HasPeach = false;
+            HasChamp = m_HasMario = HasPeach = false;
         }
 
         /// <summary>
@@ -144,12 +126,12 @@ namespace SmartMario
         public LevelCell getRightCell(MainWindow window)
         {
             // If the cell if on the right edge, there is no neighbor to return
-            if (ColumnIndex == MainWindow.m_GridSize - 1)
+            if (ColumnIndex == window.GridSize - 1)
             {
                 return null;
             }
             // Otherwise the right neighbor is next on the line index matrix
-            return window.LevelCellMatrix[LineIndex,ColumnIndex + 1];
+            return window.LevelCellMatrix[LineIndex, ColumnIndex + 1];
         }
 
         /// <summary>
@@ -160,7 +142,7 @@ namespace SmartMario
         public LevelCell getBottomCell(MainWindow window)
         {
             // If the cell if on the right edge, there is no neighbor to return
-            if (LineIndex == MainWindow.m_GridSize - 1)
+            if (LineIndex == window.GridSize - 1)
             {
                 return null;
             }

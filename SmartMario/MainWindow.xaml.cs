@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace SmartMario
@@ -24,7 +14,7 @@ namespace SmartMario
         /// <summary>
         /// Number of rows (or columns) in the level
         /// </summary>
-        public static int m_GridSize = 6;
+        private int m_GridSize = 6;
 
         /// <summary>
         /// Graphical grid used to contain and display the LevelCells
@@ -41,91 +31,64 @@ namespace SmartMario
         /// </summary>
         private LevelCell m_CellWithMario;
 
-
         /// <summary>
         /// Current score of Mario, gains +1 every time a mushroom is collected
         /// </summary>
         private int m_Score = 0;
 
+        /// <summary>
+        /// Timer used to keep track of the remaining time for choosing an action
+        /// </summary>
         private DispatcherTimer m_DispatcherTimer = new DispatcherTimer();
+
+        /// <summary>
+        /// Timer used to diplay the remaining time (refreshes every 50 ms)
+        /// </summary>
         private DispatcherTimer m_DisplayTimer = new DispatcherTimer();
 
-        private DateTime start;
+        /// <summary>
+        /// Datetime used to store the 
+        /// </summary>
+        private DateTime m_Start;
+
+        /// <summary>
+        /// Time to choose an action ()
+        /// </summary>
+        private TimeSpan m_Delay = new TimeSpan(0, 0, 5);
 
         public MainWindow()
         {
             InitializeComponent();
 
-            CreateLevel();
-
-            PopulateLevel();
-
-            //Pathfinding.ComputeMaxChampPath(m_LevelCellMatrix);
-
-            CreateGUI();
-
-
-            //RoundAndAroundAndAround();
-
             // Timers setup
             m_DisplayTimer.Tick += new EventHandler(displayTimer_Tick);
             m_DispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
 
-            m_DispatcherTimer.Interval = new TimeSpan(0, 0, 5);
-            m_DisplayTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
-            start = DateTime.Now;
-            m_DisplayTimer.Start();
-            m_DispatcherTimer.Start();
+            initWPF();
         }
 
-        private void displayTimer_Tick(object sender, EventArgs e)
+        private void initWPF()
         {
-            timerText.Text = Convert.ToString(DateTime.Now - start);
-        }
+            CreateLevel();
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            m_DisplayTimer.Stop();
-            m_DispatcherTimer.Stop();
-            MessageBox.Show("you loose !");
-        }
+            PopulateLevel();
 
-        private void ResetTimer()
-        {
-            m_DisplayTimer.Stop();
-            m_DispatcherTimer.Stop();
-            m_DisplayTimer.Interval = new TimeSpan(0, 0, 0, 50);
-            m_DispatcherTimer.Interval = new TimeSpan(0, 0, 5);
-            start = DateTime.Now;
-            m_DispatcherTimer.Start();
-            m_DisplayTimer.Start();
-        }
+            // Compute the path to get the most mushrooms
+            Pathfinding.ComputeMaxChampPath(m_LevelCellMatrix);
+            // Display the maximum number of mushrooms possible to get
+            nbMushroomsMaxText.Text = Pathfinding.GridMaximumMushroomsNumber.ToString();
 
-        #region Getters / Setters
-
-        //public int GridSize
-        //{
-        //    get
-        //    {
-        //        return m_GridSize;
-        //    }
-        //    set
-        //    {
-        //        m_GridSize = value;
-        //    }
-        //}
-
-        public Grid LevelGridGUI
-        {
-            get
+            foreach (LevelCell cell in Pathfinding.Path)
             {
-                return m_LevelGridGUI;
+                //m_LevelCellMatrix[cell.LineIndex, cell.ColumnIndex].AddMario();
             }
-            set
-            {
-                m_LevelGridGUI = value;
-            }
+
+            CreateGUI();
+
+            InitialiseTimers();
         }
+
+        #region Getter / Setter
 
         public LevelCell[,] LevelCellMatrix
         {
@@ -139,27 +102,11 @@ namespace SmartMario
             }
         }
 
-        public LevelCell CellWithMario
+        public int GridSize
         {
             get
             {
-                return m_CellWithMario;
-            }
-            set
-            {
-                m_CellWithMario = value;
-            }
-        }
-
-        public int Score
-        {
-            get
-            {
-                return m_Score;
-            }
-            set
-            {
-                m_Score = value;
+                return m_GridSize;
             }
         }
 
@@ -168,7 +115,7 @@ namespace SmartMario
         /// <summary>
         /// Creates a level matrix with the size "m_GridSize" with a LevelCell in each cell
         /// </summary>
-        public void CreateLevel()
+        private void CreateLevel()
         {
             LevelCellMatrix = new LevelCell[m_GridSize, m_GridSize];
 
@@ -189,7 +136,7 @@ namespace SmartMario
         /// <summary>
         /// Populates the matrix of cell that represents a level, and will later be displayed in the GUI
         /// </summary>
-        public void PopulateLevel()
+        private void PopulateLevel()
         {
             for (int i = 0; i < m_GridSize; i++)
             {
@@ -198,7 +145,7 @@ namespace SmartMario
                     if (i == 0 && j == 0)
                     {
                         LevelCellMatrix[i, j].AddMario();
-                        CellWithMario = LevelCellMatrix[i, j];
+                        m_CellWithMario = LevelCellMatrix[i, j];
                     }
                     else if ((i == m_GridSize - 1) && (j == m_GridSize - 1))
                     {
@@ -208,6 +155,7 @@ namespace SmartMario
                            (i == 1 && (j == 1) | (j == 3)) |
                            (i == 2 && (j == 3) | (j == 5)) |
                            (i == 3 && (j == 2) | (j == 5)) |
+                           (i == 4 && (j == 3) | (j == 4)) |
                            (i == 5 && (j == 0) | (j == 4)))
                     {
                         LevelCellMatrix[i, j].AddChamp();
@@ -220,15 +168,15 @@ namespace SmartMario
         /// Creates a grid with "GridSize" rows and columns, which contains
         /// all the level cells for display purpose
         /// </summary>
-        public void CreateGUI()
+        private void CreateGUI()
         {
-            LevelGridGUI = new Grid();
+            m_LevelGridGUI = new Grid();
 
             // Creates the desired number of rows and columns for the grid
             for (int i = 0; i < m_GridSize; i++)
             {
-                LevelGridGUI.RowDefinitions.Add(new RowDefinition());
-                LevelGridGUI.ColumnDefinitions.Add(new ColumnDefinition());
+                m_LevelGridGUI.RowDefinitions.Add(new RowDefinition());
+                m_LevelGridGUI.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
             for (int i = 0; i < m_GridSize; i++)
@@ -239,75 +187,125 @@ namespace SmartMario
                     Grid.SetRow(m_LevelCellMatrix[i, j], i);
                     Grid.SetColumn(m_LevelCellMatrix[i, j], j);
 
-                    LevelGridGUI.Children.Add(m_LevelCellMatrix[i, j]);
+                    m_LevelGridGUI.Children.Add(m_LevelCellMatrix[i, j]);
                 }
             }
 
-            Grid.SetRow(LevelGridGUI, 0);
-            Grid.SetColumn(LevelGridGUI, 0);
-            mainGrid.Children.Add(LevelGridGUI);
+            Grid.SetRow(m_LevelGridGUI, 0);
+            Grid.SetColumn(m_LevelGridGUI, 0);
+            mainGrid.Children.Add(m_LevelGridGUI);
             Content = mainGrid;
         }
-        
-        public void EditTextDetails()
-        {
-            nbMushroomsText.Text = Score.ToString();
 
+        /// <summary>
+        /// Initialize the timers with their trigger value
+        /// </summary>
+        private void InitialiseTimers()
+        {
+            m_DispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            m_DisplayTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            m_Start = DateTime.Now;
+            m_DisplayTimer.Start();
+            m_DispatcherTimer.Start();
+        }
+
+        /// <summary>
+        /// Update the current number of mushrooms
+        /// </summary>
+        private void EditTextDetails()
+        {
+            nbMushroomsText.Text = m_Score.ToString();
             Content = mainGrid;
         }
-        public void RoundAndAroundAndAround()
+
+        /// <summary>
+        /// Reset the timers (when the player clicks on a button)
+        /// </summary>
+        private void ResetTimers()
         {
-            // Déroulement d'un tour de jeu, avec soit le déplacement par le joueur soit le timer qui finit
+            m_DisplayTimer.Stop();
+            m_DispatcherTimer.Stop();
+
+            InitialiseTimers();
+        }
+
+        /// <summary>
+        /// Update the current position of Mario, the current number of mushrooms and reset the timer
+        /// </summary>
+        /// <param name="nextCellToGo"> The next cell where Marion will go </param>
+        private void RoundAndAroundAndAround(LevelCell nextCellToGo)
+        {
+            if (nextCellToGo != null)
+            {
+                if (nextCellToGo.HasChamp == true)
+                {
+                    m_Score++;
+                    EditTextDetails();
+                }
+                nextCellToGo.AddMario();
+                m_CellWithMario.ClearCell();
+                m_CellWithMario = nextCellToGo;
+            }
+            else
+            {
+                //MessageBox.Show("Don't fly, you fool !");
+            }
 
             EditTextDetails();
+            ResetTimers();
         }
 
         #region Events
 
         /// <summary>
-        /// Events called when the button for going right is clicked
+        /// Event called when the button for going right is clicked
         /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void On_GoRightButtonClick(object sender, RoutedEventArgs e)
         {
-            LevelCell nextCellToGo = CellWithMario.getRightCell(this);
-            if (nextCellToGo != null)
-            {
-                if (nextCellToGo.HasChamp == true)
-                {
-                    Score++;
-                    EditTextDetails();
-                }
-                nextCellToGo.AddMario();
-                CellWithMario.ClearCell();
-                CellWithMario = nextCellToGo;
-            }
-            else
-            {
-                MessageBox.Show("Don't fly, you fool !");
-            }
+            LevelCell nextCellToGo = m_CellWithMario.getRightCell(this);
+
+            RoundAndAroundAndAround(nextCellToGo);
         }
 
         /// <summary>
-        /// Events called when the button for going down is clicked
+        /// Event called when the button for going down is clicked
         /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void On_GoDownButtonClick(object sender, RoutedEventArgs e)
         {
-            LevelCell nextCellToGo = CellWithMario.getBottomCell(this);
-            if (nextCellToGo != null)
-            {
-                if (nextCellToGo.HasChamp == true)
-                {
-                    Score++;
-                    EditTextDetails();
-                }
-                nextCellToGo.AddMario();
-                CellWithMario.ClearCell();
-                CellWithMario = nextCellToGo;
-            }
-            else
-            {
-                MessageBox.Show("Don't fly, you fool !");
-            }
+            LevelCell nextCellToGo = m_CellWithMario.getBottomCell(this);
+
+            RoundAndAroundAndAround(nextCellToGo);
+        }
+
+        /// <summary>
+        /// Event triggered when the displayTimer reaches 50 ms to refresh the time display
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void displayTimer_Tick(object sender, EventArgs e)
+        {
+            CultureInfo ci = CultureInfo.InvariantCulture;
+            DateTime time = Convert.ToDateTime((m_Delay - (DateTime.Now - m_Start)).ToString());
+
+            timerText.Text = "Temps restant : " + time.ToString("s.ff");
+        }
+
+        /// <summary>
+        /// Event triggered when the 5 seconds timer reaches 0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            m_DisplayTimer.Stop();
+            m_DispatcherTimer.Stop();
+            MessageBox.Show("you loose !");
+
+            initWPF();
         }
 
         #endregion
