@@ -196,8 +196,6 @@ namespace SmartMario
                 if (!(line[k] == 0 && column[k] == 0) && !(line[k] == m_GridSize - 1 && column[k] == m_GridSize - 1))
                     LevelCellMatrix[line[k], column[k]].AddChamp();
             }
-
-            LevelCellMatrix[1, 0].AddChamp();
         }
 
         /// <summary>
